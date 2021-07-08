@@ -13,6 +13,15 @@ from clvm.SExp import SExp, to_sexp_type
 from clvm.serialize import sexp_from_stream
 from clvm_tools.binutils import disassemble
 
+def list_tests(tlist):
+    for t in tlist:
+        try:
+            list_tests(t._tests)
+        except:
+            short_string = str(t)
+            split_string = short_string.split(' ')
+            print(split_string[0])
+
 def dev_util(args=sys.argv):
     if len(args) < 2:
         cmd = "help"
@@ -91,4 +100,7 @@ disassemble - disassemble hex files""")
         testloader = unittest.TestLoader()
         suite = testloader.discover(start_dir='./tests')
         runner = unittest.TextTestRunner()
-        runner.run(suite)
+        if args[2:] == ['--discover']:
+            list_tests(suite._tests)
+        else:
+            runner.run(suite)
